@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Map Example</title>
+  <!-- Include Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    /* Set the size of the map container */
+    #map { height: 400px; width: 100%; }
+  </style>
+</head>
+<body>
+  <h2>Location Map</h2>
+  <!-- Map container -->
+  <div id="map"></div>
+  
+  <!-- Include Leaflet JavaScript -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    // Initialize the map and set its view to default coordinates
+    var map = L.map('map').setView([25.276987, 55.296249], 10); // Dubai, UAE
+    
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    
+    // Add a marker at the center
+    var marker = L.marker([25.276987, 55.296249]).addTo(map)
+      .bindPopup('UAE Location')
+      .openPopup();
+  </script>
+</body>
+</html>
