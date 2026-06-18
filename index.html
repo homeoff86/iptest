@@ -1,49 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Phone Number Locator</title>
-<!-- Include Leaflet CSS for maps -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-<style>
-  body { font-family: Arial, sans-serif; margin: 20px; }
-  #map { height: 400px; margin-top: 20px; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phone Number Lookup</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+    input[type="text"] {
+      padding: 8px;
+      font-size: 16px;
+      width: 250px;
+    }
+    button {
+      padding: 8px 16px;
+      font-size: 16px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    #locationDisplay {
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
+  <h1>Phone Number Lookup</h1>
+  <input type="text" id="phoneNumber" placeholder="Enter phone number" />
+  <button onclick="lookupPhone()">Lookup Phone</button>
+  <div id="locationDisplay"></div>
 
-<h2>Enter Phone Number to Locate</h2>
-<input type="text" id="phoneNumber" placeholder="Enter phone number" />
-<button onclick="locateNumber()">Locate</button>
+  <script>
+    async function lookupPhone() {
+      const displayDiv = document.getElementById('locationDisplay');
+      const phoneNumber = document.getElementById('phoneNumber').value.trim();
 
-<div id="map"></div>
+      if (!phoneNumber) {
+        alert('Please enter a phone number.');
+        return;
+      }
 
-<!-- Include Leaflet JS -->
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script>
-  let map = L.map('map').setView([0, 0], 2); // Default view
+      const apiKey = 'eca704b5c3519891f0af4de86ba9a212'; // Your API key
+      const url = `https://apilayer.net/api/validate?access_key=${apiKey}&number=${encodeURIComponent(phoneNumber)}`;
 
-  // Add OpenStreetMap tiles
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(map);
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
 
-  function locateNumber() {
-    const phoneNumber = document.getElementById('phoneNumber').value;
-    // For testing, we'll just use a fixed location (e.g., New York)
-    const lat = 40.7128;
-    const lng = -74.0060;
-
-    // Clear previous markers
-    if (window.marker) {
-      map.removeLayer(window.marker);
+        if (data.valid) {
+          displayDiv.innerHTML = `
+            <h3>Details for ${phoneNumber}:</h3>
+            <p>Country: ${data.country_name}</p>
+            <p>Location: ${data.location}</p>
+            <p>Carrier: ${data.carrier}</p>
+            <p>Line type: ${data.line_type}</p>
+          `;
+        } else {
+          displayDiv.innerHTML = `<p>Invalid phone number or data not available.</p>`;
+        }
+      } catch (error) {
+        displayDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+      }
     }
-
-    // Add marker at fixed location
-    window.marker = L.marker([lat, lng]).addTo(map);
-    map.setView([lat, lng], 13);
-  }
-</script>
+  </script>
 </body>
 </html>
