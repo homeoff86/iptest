@@ -1,19 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Map Page</title>
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Phone Number Locator</title>
+<!-- Include Leaflet CSS for maps -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  #map { height: 400px; margin-top: 20px; }
+</style>
 </head>
 <body>
 
-    <div id="map"></div>
+<h2>Enter Phone Number to Locate</h2>
+<input type="text" id="phoneNumber" placeholder="Enter phone number" />
+<button onclick="locateNumber()">Locate</button>
 
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="script.js"></script>
+<div id="map"></div>
+
+<!-- Include Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+  let map = L.map('map').setView([0, 0], 2); // Default view
+
+  // Add OpenStreetMap tiles
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  function locateNumber() {
+    const phoneNumber = document.getElementById('phoneNumber').value;
+    // For testing, we'll just use a fixed location (e.g., New York)
+    const lat = 40.7128;
+    const lng = -74.0060;
+
+    // Clear previous markers
+    if (window.marker) {
+      map.removeLayer(window.marker);
+    }
+
+    // Add marker at fixed location
+    window.marker = L.marker([lat, lng]).addTo(map);
+    map.setView([lat, lng], 13);
+  }
+</script>
 </body>
 </html>
